@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="in.co.gamedev.bookexchange" >
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission
+        android:name="com.example.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.SignupActivity"
+            android:label="@string/title_activity_signup" >
+        </activity>
+        <activity
+            android:name=".activity.UserLocationActivity"
+            android:label="@string/title_activity_user_location" >
+        </activity>
+
+        <receiver
+            android:name=".apiclient.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="in.co.gamedev.bookexchange.apiclient" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".apiclient.GcmIntentService" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="my api key" />
+
+        <activity
+            android:name=".activity.SearchBookActivity"
+            android:label="@string/title_activity_search_book" >
+        </activity>
+        <activity
+            android:name=".activity.MyBooksActivity"
+            android:label="@string/title_activity_my_books" >
+        </activity>
+        <activity
+            android:name=".activity.NeededBooksActivity"
+            android:label="@string/title_activity_needed_books" >
+        </activity>
+        <activity
+            android:name=".activity.ExchangeMatchesActivity"
+            android:label="@string/title_activity_exchange_matches" >
+        </activity>
+    </application>
+
+</manifest>

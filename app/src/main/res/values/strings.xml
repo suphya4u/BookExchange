@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Book Exchange</string>
+    <string name="title_activity_signup">Signup</string>
+    <string name="first_name">First Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="signup_button">Complete Signup</string>
+    <string name="title_activity_user_location">Location</string>
+    <string name="set_location_button">Done</string>
+    <string name="select_location_help_text">Select your location where you prefer to do exchanges:</string>
+    <string name="location_range_text">miles from the selected location</string>
+    <string name="action_set_location">Update My Location</string>
+    <string name="msg_registration_failed">Registration Failed</string>
+    <string name="msg_location_update_failed">Failed to update location</string>
+    <string name="msg_location_update_successful">Location updated successfully</string>
+
+    <string-array name="location_range_entries">
+        <item>20</item>
+        <item>25</item>
+        <item>35</item>
+        <item>50</item>
+    </string-array>
+    <string name="title_activity_search_book">Search Book</string>
+    <string name="title_activity_my_books">My Books</string>
+    <string name="title_activity_needed_books">Books I Want</string>
+    <string name="title_activity_exchange_matches">My Exchanges</string>
+    <string name="add_book">Add</string>
+    <string name="search_book_input">Search by Title/Auhor/ISBN</string>
+    <string name="search_button">Search</string>
+    <string name="action_clear_prefs">Clear All Prefs</string>
+</resources>
