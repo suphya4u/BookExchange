@@ -10,7 +10,7 @@
                 tools:context="in.co.gamedev.bookexchange.activity.MyBooksActivity">
 
     <TextView
-        android:text="My books available for exchange should show up here."
+        android:text="List of you books up for exchange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -18,7 +18,8 @@
         android:id="@+id/zero_books_help_text"
         android:text="Looks like you have not yet added anything in here. Please add books you would like to exchange."
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_books_list"

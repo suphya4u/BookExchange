@@ -21,7 +21,7 @@ public class FetchExchangeDetailsResponse extends ServiceResponse {
     return this;
   }
 
-  public class Exchange {
+  public static class Exchange {
     private BookData pickupBook;
     private BookData dropBook;
     private ExchangeStatus.ApprovalStatus myApprovalStatus;

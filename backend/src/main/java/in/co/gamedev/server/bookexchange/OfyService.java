@@ -5,6 +5,7 @@ import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 
 import in.co.gamedev.server.bookexchange.data.storage.BookData;
+import in.co.gamedev.server.bookexchange.data.storage.ExchangeCycle;
 import in.co.gamedev.server.bookexchange.data.storage.UserBook;
 import in.co.gamedev.server.bookexchange.data.storage.UserData;
 
@@ -17,6 +18,7 @@ public class OfyService {
   static {
     ObjectifyService.register(UserData.class);
     ObjectifyService.register(BookData.class);
+    ObjectifyService.register(ExchangeCycle.class);
   }
 
   public static Objectify ofy() {

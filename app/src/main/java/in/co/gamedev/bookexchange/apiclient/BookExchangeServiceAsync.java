@@ -25,6 +25,8 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.AddBookRespon
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookData;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchResponse;
+import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsRequest;
+import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserRequest;
@@ -76,6 +78,12 @@ public class BookExchangeServiceAsync {
   public AddBookResponse addBookToList(final AddBookRequest addBookRequest) throws IOException {
     final BookExchangeService service = getService();
     return service.addBookToList(addBookRequest).execute();
+  }
+
+  public FetchExchangeDetailsResponse fetchExchangeDetails(
+      final FetchExchangeDetailsRequest fetchExchangeDetailsRequest) throws IOException {
+    final BookExchangeService service = getService();
+    return service.fetchExchangeDetails(fetchExchangeDetailsRequest).execute();
   }
 
   private BookExchangeService getService() {

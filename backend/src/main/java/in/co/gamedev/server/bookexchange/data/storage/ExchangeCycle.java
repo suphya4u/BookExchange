@@ -24,19 +24,21 @@ public class ExchangeCycle {
     return exchangeCycleId;
   }
 
-  public void setExchangeCycleId(String exchangeCycleId) {
+  public ExchangeCycle setExchangeCycleId(String exchangeCycleId) {
     this.exchangeCycleId = exchangeCycleId;
+    return this;
   }
 
   public List<UserBookInvolved> getUserBooksInvolved() {
     return userBooksInvolved;
   }
 
-  public void setUserBooksInvolved(List<UserBookInvolved> userBooksInvolved) {
+  public ExchangeCycle setUserBooksInvolved(List<UserBookInvolved> userBooksInvolved) {
     this.userBooksInvolved = userBooksInvolved;
+    return this;
   }
 
-  public class UserBookInvolved {
+  public static class UserBookInvolved {
     private String userId;
     private String pickupBookId;
     private String dropBookId;
@@ -46,32 +48,36 @@ public class ExchangeCycle {
       return userId;
     }
 
-    public void setUserId(String userId) {
+    public UserBookInvolved setUserId(String userId) {
       this.userId = userId;
+      return this;
     }
 
     public String getPickupBookId() {
       return pickupBookId;
     }
 
-    public void setPickupBookId(String pickupBookId) {
+    public UserBookInvolved setPickupBookId(String pickupBookId) {
       this.pickupBookId = pickupBookId;
+      return this;
     }
 
     public String getDropBookId() {
       return dropBookId;
     }
 
-    public void setDropBookId(String dropBookId) {
+    public UserBookInvolved setDropBookId(String dropBookId) {
       this.dropBookId = dropBookId;
+      return this;
     }
 
     public ExchangeStatus.ApprovalStatus getApprovalStatus() {
       return approvalStatus;
     }
 
-    public void setApprovalStatus(ExchangeStatus.ApprovalStatus approvalStatus) {
+    public UserBookInvolved setApprovalStatus(ExchangeStatus.ApprovalStatus approvalStatus) {
       this.approvalStatus = approvalStatus;
+      return this;
     }
   }
 }

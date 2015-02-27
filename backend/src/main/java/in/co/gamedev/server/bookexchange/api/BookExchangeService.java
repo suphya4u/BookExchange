@@ -26,6 +26,9 @@ import in.co.gamedev.server.bookexchange.api.messages.UpdateLocationRequest;
 import in.co.gamedev.server.bookexchange.bookapis.goodreads.GoodReadsApi;
 import in.co.gamedev.server.bookexchange.data.storage.BookData;
 import in.co.gamedev.server.bookexchange.data.storage.BookDataStore;
+import in.co.gamedev.server.bookexchange.data.storage.ExchangeCycle;
+import in.co.gamedev.server.bookexchange.data.storage.ExchangeCycleStore;
+import in.co.gamedev.server.bookexchange.data.storage.ExchangeStatus;
 import in.co.gamedev.server.bookexchange.data.storage.UserBook;
 import in.co.gamedev.server.bookexchange.data.storage.UserData;
 import in.co.gamedev.server.bookexchange.data.storage.UserDataStore;
@@ -44,10 +47,12 @@ public class BookExchangeService {
   private final Logger logger = Logger.getLogger(BookExchangeService.class.getName());
   private final UserDataStore userDataStore;
   private final BookDataStore bookDataStore;
+  private final ExchangeCycleStore exchangeCycleStore;
 
   public BookExchangeService() {
     userDataStore = new UserDataStore();
     bookDataStore = new BookDataStore();
+    exchangeCycleStore = new ExchangeCycleStore();
   }
 
   @ApiMethod(name = "registerUser")
@@ -68,7 +73,31 @@ public class BookExchangeService {
   @ApiMethod(name = "fetchExchangeDetails")
   public FetchExchangeDetailsResponse fetchExchangeDetails(
       FetchExchangeDetailsRequest fetchExchangeDetailsRequest) {
-    return new FetchExchangeDetailsResponse();
+
+    UserData userData = userDataStore.getUserData(fetchExchangeDetailsRequest.getUserId());
+    Set<UserData.ExchangeData> exchanges = userData.getExchangeData();
+    List<FetchExchangeDetailsResponse.Exchange> exchangeList = new ArrayList();
+    for (UserData.ExchangeData exchangeData : exchanges) {
+      ExchangeCycle exchangeCycle = exchangeCycleStore.getExchangeCycle(exchangeData.getExchangeId());
+      boolean othersApproved = true;
+      FetchExchangeDetailsResponse.Exchange exchange = new FetchExchangeDetailsResponse.Exchange();
+      for (ExchangeCycle.UserBookInvolved userBookInvolved : exchangeCycle.getUserBooksInvolved()) {
+        if (userBookInvolved.getUserId().equalsIgnoreCase(fetchExchangeDetailsRequest.getUserId())) {
+          BookData pickupBook = bookDataStore.getBookData(userBookInvolved.getPickupBookId());
+          BookData dropBook = bookDataStore.getBookData(userBookInvolved.getDropBookId());
+          exchange.setPickupBook(pickupBook);
+          exchange.setDropBook(dropBook);
+          exchange.setMyApprovalStatus(userBookInvolved.getApprovalStatus());
+        } else {
+          othersApproved = othersApproved
+              && userBookInvolved.getApprovalStatus().equals(ExchangeStatus.ApprovalStatus.APPROVED);
+        }
+      }
+      exchange.setOtherUserApprovalStatus(othersApproved ? ExchangeStatus.ApprovalStatus.APPROVED
+          : ExchangeStatus.ApprovalStatus.WAITING);
+      exchangeList.add(exchange);
+    }
+    return new FetchExchangeDetailsResponse().setExchanges(exchangeList);
   }
 
   @ApiMethod(name = "searchBook")

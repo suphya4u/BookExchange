@@ -55,7 +55,7 @@ public abstract class BookListActivity extends ActionBarActivity {
           zeroBooksHelpText.setVisibility(View.VISIBLE);
           bookListView.setVisibility(View.INVISIBLE);
         } else {
-          zeroBooksHelpText.setVisibility(View.INVISIBLE);
+          zeroBooksHelpText.setVisibility(View.GONE);
           bookListView.setVisibility(View.VISIBLE);
           ((BookListRecyclerAdapter) bookListView.getAdapter()).addItems(response.getBooks());
         }
@@ -99,12 +99,16 @@ public abstract class BookListActivity extends ActionBarActivity {
       @Override
       public void onPostExecute(AddBookResponse response) {
         if (response == null) {
-          Toast.makeText(BookListActivity.this, "Failed to fetch books list", Toast.LENGTH_LONG).show();
+          Toast.makeText(BookListActivity.this, "Failed to add book to the list", Toast.LENGTH_LONG).show();
           return;
         }
         if (bookListView.getAdapter() != null) {
           BookListRecyclerAdapter adapter = ((BookListRecyclerAdapter) bookListView.getAdapter());
           adapter.addItem(bookData);
+
+          TextView zeroBooksHelpText = (TextView) findViewById(R.id.zero_books_help_text);
+          zeroBooksHelpText.setVisibility(View.GONE);
+          bookListView.setVisibility(View.VISIBLE);
         }
         Toast.makeText(BookListActivity.this, "Book added successfully", Toast.LENGTH_LONG).show();
       }

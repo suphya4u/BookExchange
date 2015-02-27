@@ -10,7 +10,7 @@
                 tools:context="in.co.gamedev.bookexchange.activity.NeededBooksActivity">
 
     <TextView
-        android:text="Books I am expecting in exchange should show up here."
+        android:text="List of books you would like to get in exchange"
         android:layout_width= "wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -18,7 +18,8 @@
         android:id="@+id/zero_books_help_text"
         android:text="Looks like you have not yet added anything in here. Please add books you want in exchange of your books."
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/expected_books_list"

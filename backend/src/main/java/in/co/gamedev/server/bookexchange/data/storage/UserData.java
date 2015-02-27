@@ -1,5 +1,6 @@
 package in.co.gamedev.server.bookexchange.data.storage;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -25,10 +26,12 @@ public class UserData {
   private long userLocationLong;
   private Set<UserBook> ownedBooks;
   private Set<UserBook> expectedBooks;
+  private Set<ExchangeData> exchangeData;
 
   public UserData() {
     ownedBooks = new HashSet();
     expectedBooks = new HashSet();
+    exchangeData = new HashSet();
   }
 
   public String getUserId() {
@@ -130,5 +133,50 @@ public class UserData {
   public UserData setFirstName(String firstName) {
     this.firstName = firstName;
     return this;
+  }
+
+  public Set<ExchangeData> getExchangeData() {
+    return exchangeData;
+  }
+
+  public void addExchangeCycle(String exchangeId, String pickupBookId, String dropBookId) {
+    updateBookStatusForExchange(pickupBookId);
+    // TODO(suhas): Drop book check could be little loose. As user can accept something that is not in the list.
+    // But add few checks to avoid spammy exchange alerts.
+    exchangeData.add(new ExchangeData(exchangeId, pickupBookId, dropBookId));
+  }
+
+  private void updateBookStatusForExchange(String bookId) {
+    for (UserBook userBook : ownedBooks) {
+      if (userBook.getBookId().equalsIgnoreCase(bookId)) {
+        Preconditions.checkArgument(userBook.getBookExchangeStatus().equals(
+            ExchangeStatus.BookStatus.READY_FOR_EXCHANGE), "Book not READY_FOR_EXCHANGE");
+        userBook.setBookExchangeStatus(ExchangeStatus.BookStatus.AWAITING_APPROVAL);
+      }
+    }
+  }
+
+  public class ExchangeData {
+    private String exchangeId;
+    private String pickupBookId;
+    private String dropBookId;
+
+    private ExchangeData(String exchangeId, String pickupBookId, String dropBookId) {
+      this.exchangeId = exchangeId;
+      this.pickupBookId = pickupBookId;
+      this.dropBookId = dropBookId;
+    }
+
+    public String getExchangeId() {
+      return exchangeId;
+    }
+
+    public String getPickupBookId() {
+      return pickupBookId;
+    }
+
+    public String getDropBookId() {
+      return dropBookId;
+    }
   }
 }
