@@ -1,5 +1,6 @@
 package in.co.gamedev.server.bookexchange.data.storage;
 
+import com.google.common.base.Preconditions;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
@@ -33,8 +34,12 @@ public class ExchangeCycle {
     return userBooksInvolved;
   }
 
-  public ExchangeCycle setUserBooksInvolved(List<UserBookInvolved> userBooksInvolved) {
-    this.userBooksInvolved = userBooksInvolved;
+  public ExchangeCycle addUserBooksInvolved(UserBookInvolved userBookInvolved) {
+    for (UserBookInvolved userBook : userBooksInvolved) {
+      Preconditions.checkArgument(!userBook.getUserId().equals(userBookInvolved.getUserId()),
+          "User already involved in the cycle");
+    }
+    this.userBooksInvolved.add(userBookInvolved);
     return this;
   }
 

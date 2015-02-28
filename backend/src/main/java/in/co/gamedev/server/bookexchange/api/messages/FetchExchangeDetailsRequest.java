@@ -11,7 +11,8 @@ public class FetchExchangeDetailsRequest {
     return userId;
   }
 
-  public void setUserId(String userId) {
+  public FetchExchangeDetailsRequest setUserId(String userId) {
     this.userId = userId;
+    return this;
   }
 }

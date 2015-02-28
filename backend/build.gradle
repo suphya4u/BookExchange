@@ -29,6 +29,10 @@ dependencies {
     compile 'javax.servlet:servlet-api:2.5'
     compile 'com.googlecode.objectify:objectify:5.0.3'
     compile 'com.ganyo:gcm-server:1.0.2'
+    testCompile 'com.google.appengine:appengine-testing:1.9.18'
+    testCompile 'com.google.appengine:appengine-api-stubs:1.9.18'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.9.5'
 }
 
 appengine {

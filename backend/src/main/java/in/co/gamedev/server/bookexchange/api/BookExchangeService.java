@@ -15,6 +15,8 @@ import in.co.gamedev.server.bookexchange.api.messages.AddBookRequest;
 import in.co.gamedev.server.bookexchange.api.messages.AddBookResponse;
 import in.co.gamedev.server.bookexchange.api.messages.BookSearchRequest;
 import in.co.gamedev.server.bookexchange.api.messages.BookSearchResponse;
+import in.co.gamedev.server.bookexchange.api.messages.ChangeExchangeApprovalRequest;
+import in.co.gamedev.server.bookexchange.api.messages.ChangeExchangeApprovalResponse;
 import in.co.gamedev.server.bookexchange.api.messages.FetchExchangeDetailsRequest;
 import in.co.gamedev.server.bookexchange.api.messages.FetchExchangeDetailsResponse;
 import in.co.gamedev.server.bookexchange.api.messages.GetBookListRequest;
@@ -79,22 +81,26 @@ public class BookExchangeService {
     List<FetchExchangeDetailsResponse.Exchange> exchangeList = new ArrayList();
     for (UserData.ExchangeData exchangeData : exchanges) {
       ExchangeCycle exchangeCycle = exchangeCycleStore.getExchangeCycle(exchangeData.getExchangeId());
-      boolean othersApproved = true;
+      ExchangeStatus.ApprovalStatus othersApprovalStatus = ExchangeStatus.ApprovalStatus.APPROVED;
       FetchExchangeDetailsResponse.Exchange exchange = new FetchExchangeDetailsResponse.Exchange();
       for (ExchangeCycle.UserBookInvolved userBookInvolved : exchangeCycle.getUserBooksInvolved()) {
-        if (userBookInvolved.getUserId().equalsIgnoreCase(fetchExchangeDetailsRequest.getUserId())) {
+        if (userBookInvolved.getUserId().equals(fetchExchangeDetailsRequest.getUserId())) {
           BookData pickupBook = bookDataStore.getBookData(userBookInvolved.getPickupBookId());
           BookData dropBook = bookDataStore.getBookData(userBookInvolved.getDropBookId());
           exchange.setPickupBook(pickupBook);
           exchange.setDropBook(dropBook);
           exchange.setMyApprovalStatus(userBookInvolved.getApprovalStatus());
         } else {
-          othersApproved = othersApproved
-              && userBookInvolved.getApprovalStatus().equals(ExchangeStatus.ApprovalStatus.APPROVED);
+          if (othersApprovalStatus.equals(ExchangeStatus.ApprovalStatus.APPROVED)) {
+            othersApprovalStatus = userBookInvolved.getApprovalStatus();
+          } else if (othersApprovalStatus.equals(ExchangeStatus.ApprovalStatus.WAITING)
+              && userBookInvolved.getApprovalStatus().equals(
+                  ExchangeStatus.ApprovalStatus.CANCELLED)) {
+            othersApprovalStatus = ExchangeStatus.ApprovalStatus.CANCELLED;
+          }
         }
       }
-      exchange.setOtherUserApprovalStatus(othersApproved ? ExchangeStatus.ApprovalStatus.APPROVED
-          : ExchangeStatus.ApprovalStatus.WAITING);
+      exchange.setOtherUserApprovalStatus(othersApprovalStatus);
       exchangeList.add(exchange);
     }
     return new FetchExchangeDetailsResponse().setExchanges(exchangeList);
@@ -141,5 +147,21 @@ public class BookExchangeService {
     }
     userDataStore.updateUserData(userData);
     return new AddBookResponse();
+  }
+
+  @ApiMethod(name = "addExchangeCycle")
+  public void addExchangeCycle(ExchangeCycle exchangeCycle) {
+    exchangeCycleStore.storeExchangeCycle(exchangeCycle);
+  }
+
+  @ApiMethod(name = "changeExchangeApproval")
+  public ChangeExchangeApprovalResponse changeExchangeApproval(
+      ChangeExchangeApprovalRequest changeExchangeApprovalRequest) {
+    exchangeCycleStore.updateExchangeApproval(
+        changeExchangeApprovalRequest.getExchangeCycleId(),
+        changeExchangeApprovalRequest.getUserId(),
+        changeExchangeApprovalRequest.getNewApprovalStatus()
+    );
+    return new ChangeExchangeApprovalResponse();
   }
 }

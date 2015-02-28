@@ -39,10 +39,25 @@ public class ExchangeCycleStore {
           userData.addExchangeCycle(exchangeCycle.getExchangeCycleId(),
               userBookInvolved.getPickupBookId(), userBookInvolved.getDropBookId());
           userDataStore.updateUserData(userData);
+          if (userBookInvolved.getApprovalStatus() == null) {
+            userBookInvolved.setApprovalStatus(ExchangeStatus.ApprovalStatus.WAITING);
+          }
         }
         ofy().save().entity(exchangeCycle).now();
       }
     });
+  }
 
+  public void updateExchangeApproval(String exchangeCycleId, String userId,
+      ExchangeStatus.ApprovalStatus newApprovalStatus) {
+    ExchangeCycle exchangeCycle = getExchangeCycle(exchangeCycleId);
+    Preconditions.checkNotNull(exchangeCycle);
+    for (ExchangeCycle.UserBookInvolved userBookInvolved : exchangeCycle.getUserBooksInvolved()) {
+      if (userBookInvolved.getUserId().equals(userId)) {
+        userBookInvolved.setApprovalStatus(newApprovalStatus);
+        ofy().save().entity(exchangeCycle).now();
+        return;
+      }
+    }
   }
 }

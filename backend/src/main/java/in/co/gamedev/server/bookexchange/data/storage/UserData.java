@@ -152,8 +152,10 @@ public class UserData {
         Preconditions.checkArgument(userBook.getBookExchangeStatus().equals(
             ExchangeStatus.BookStatus.READY_FOR_EXCHANGE), "Book not READY_FOR_EXCHANGE");
         userBook.setBookExchangeStatus(ExchangeStatus.BookStatus.AWAITING_APPROVAL);
+        return;
       }
     }
+    throw new RuntimeException("Pickup book does not exists");
   }
 
   public class ExchangeData {
