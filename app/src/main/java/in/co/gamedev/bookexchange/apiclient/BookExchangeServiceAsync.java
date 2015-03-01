@@ -1,30 +1,20 @@
 package in.co.gamedev.bookexchange.apiclient;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
-
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import in.co.gamedev.bookexchange.R;
-import in.co.gamedev.bookexchange.common.BookListRecyclerAdapter;
 import in.co.gamedev.bookexchange.common.Constants;
-import in.co.gamedev.bookexchange.common.Storage;
 import in.co.gamedev.server.bookexchange.bookExchangeService.BookExchangeService;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.AddBookRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.AddBookResponse;
-import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookData;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchResponse;
+import in.co.gamedev.server.bookexchange.bookExchangeService.model.ChangeExchangeApprovalRequest;
+import in.co.gamedev.server.bookexchange.bookExchangeService.model.ChangeExchangeApprovalResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListRequest;
@@ -84,6 +74,12 @@ public class BookExchangeServiceAsync {
       final FetchExchangeDetailsRequest fetchExchangeDetailsRequest) throws IOException {
     final BookExchangeService service = getService();
     return service.fetchExchangeDetails(fetchExchangeDetailsRequest).execute();
+  }
+
+  public ChangeExchangeApprovalResponse changeExchangeApproval(
+      final ChangeExchangeApprovalRequest changeExchangeApprovalRequest) throws IOException {
+    final BookExchangeService service = getService();
+    return service.changeExchangeApproval(changeExchangeApprovalRequest).execute();
   }
 
   private BookExchangeService getService() {

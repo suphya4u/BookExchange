@@ -158,10 +158,12 @@ public class UserData {
     throw new RuntimeException("Pickup book does not exists");
   }
 
-  public class ExchangeData {
+  public static class ExchangeData {
     private String exchangeId;
     private String pickupBookId;
     private String dropBookId;
+
+    private ExchangeData() {}
 
     private ExchangeData(String exchangeId, String pickupBookId, String dropBookId) {
       this.exchangeId = exchangeId;

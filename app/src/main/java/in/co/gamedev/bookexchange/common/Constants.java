@@ -16,6 +16,7 @@ public class Constants {
   public static final String INTENT_EXTRA_LIST_TYPE = "BOOK_LIST_TYPE";
   public static final String BOOK_LIST_TYPE_MY_BOOKS = "MY_BOOKS";
   public static final String BOOK_LIST_TYPE_EXPECTED_BOOKS = "EXPECTED_BOOKS";
+  public static final String APPROVAL_STATUS_APPROVED = "APPROVED";
 
   public static final String SERVER_URL = "https://suphya4u.appspot.com/_ah/api/";
   public static final boolean IS_LOCAL = true;

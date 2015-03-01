@@ -3,6 +3,7 @@ package in.co.gamedev.server.bookexchange.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.Named;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import in.co.gamedev.server.bookexchange.api.messages.FetchExchangeDetailsReques
 import in.co.gamedev.server.bookexchange.api.messages.FetchExchangeDetailsResponse;
 import in.co.gamedev.server.bookexchange.api.messages.GetBookListRequest;
 import in.co.gamedev.server.bookexchange.api.messages.GetBookListResponse;
-import in.co.gamedev.server.bookexchange.api.messages.RegisterUserResponse;
 import in.co.gamedev.server.bookexchange.api.messages.RegisterUserRequest;
+import in.co.gamedev.server.bookexchange.api.messages.RegisterUserResponse;
 import in.co.gamedev.server.bookexchange.api.messages.ServiceResponse;
 import in.co.gamedev.server.bookexchange.api.messages.UpdateLocationRequest;
 import in.co.gamedev.server.bookexchange.bookapis.goodreads.GoodReadsApi;
@@ -101,6 +102,7 @@ public class BookExchangeService {
         }
       }
       exchange.setOtherUserApprovalStatus(othersApprovalStatus);
+      exchange.setExchangeCycleId(exchangeCycle.getExchangeCycleId());
       exchangeList.add(exchange);
     }
     return new FetchExchangeDetailsResponse().setExchanges(exchangeList);
@@ -162,6 +164,32 @@ public class BookExchangeService {
         changeExchangeApprovalRequest.getUserId(),
         changeExchangeApprovalRequest.getNewApprovalStatus()
     );
-    return new ChangeExchangeApprovalResponse();
+    ChangeExchangeApprovalResponse response = new ChangeExchangeApprovalResponse();
+    response.setSuccess(true);
+    return response;
+  }
+
+  @ApiMethod(name = "fakeUserAndExchange")
+  public void fakeUserAndExchange(@Named("userId") String userId) {
+    UserData existingUser = userDataStore.getUserData(userId);
+    UserData newUser = userDataStore.getUserData(registerUser(new RegisterUserRequest()
+        .setEmailAddress("fake@user.com")).getUserId());
+    String ownedBook = existingUser.getOwnedBooks().asList().get(0).getBookId();
+    String expectedBook = existingUser.getExpectedBooks().asList().get(0).getBookId();
+    addBookToList(new AddBookRequest()
+        .setUserId(newUser.getUserId())
+        .setBookId(expectedBook)
+        .setListType(Constants.BOOK_LIST_TYPE_MY_BOOKS));
+
+    addExchangeCycle(new ExchangeCycle()
+        .setExchangeCycleId("fake-exchange")
+        .addUserBooksInvolved(new ExchangeCycle.UserBookInvolved()
+            .setUserId(existingUser.getUserId())
+            .setPickupBookId(ownedBook)
+            .setDropBookId(expectedBook))
+        .addUserBooksInvolved(new ExchangeCycle.UserBookInvolved()
+            .setUserId(newUser.getUserId())
+            .setPickupBookId(expectedBook)
+            .setDropBookId(ownedBook)));
   }
 }

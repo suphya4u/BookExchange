@@ -26,6 +26,7 @@ public class FetchExchangeDetailsResponse extends ServiceResponse {
     private BookData dropBook;
     private ExchangeStatus.ApprovalStatus myApprovalStatus;
     private ExchangeStatus.ApprovalStatus otherUserApprovalStatus;
+    private String exchangeCycleId;
 
     public BookData getPickupBook() {
       return pickupBook;
@@ -61,6 +62,14 @@ public class FetchExchangeDetailsResponse extends ServiceResponse {
     public Exchange setOtherUserApprovalStatus(ExchangeStatus.ApprovalStatus otherUserApprovalStatus) {
       this.otherUserApprovalStatus = otherUserApprovalStatus;
       return this;
+    }
+
+    public String getExchangeCycleId() {
+      return exchangeCycleId;
+    }
+
+    public void setExchangeCycleId(String exchangeCycleId) {
+      this.exchangeCycleId = exchangeCycleId;
     }
   }
 }
