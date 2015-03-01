@@ -43,11 +43,6 @@ public class MessagingEndpoint {
   private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());
 
   /**
-   * Api Keys can be obtained from the google cloud console
-   */
-  private static final String API_KEY = System.getProperty("gcm.api.key");
-
-  /**
    * Send to the first 10 devices (You can modify this to send to any number of devices or a specific device)
    *
    * @param message The message to send
@@ -61,7 +56,7 @@ public class MessagingEndpoint {
     if (message.length() > 1000) {
       message = message.substring(0, 1000) + "[...]";
     }
-    Sender sender = new Sender(API_KEY);
+    Sender sender = new Sender(in.co.gamedev.server.bookexchange.Constants.API_KEY);
     Message msg = new Message.Builder().addData("message", message).build();
     List<UserData> records = ofy().load().type(UserData.class).limit(10).list();
     for (UserData record : records) {

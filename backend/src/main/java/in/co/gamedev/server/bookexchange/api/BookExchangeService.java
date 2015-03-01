@@ -1,11 +1,15 @@
 package in.co.gamedev.server.bookexchange.api;
 
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.common.collect.ImmutableList;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,9 +36,12 @@ import in.co.gamedev.server.bookexchange.data.storage.BookDataStore;
 import in.co.gamedev.server.bookexchange.data.storage.ExchangeCycle;
 import in.co.gamedev.server.bookexchange.data.storage.ExchangeCycleStore;
 import in.co.gamedev.server.bookexchange.data.storage.ExchangeStatus;
+import in.co.gamedev.server.bookexchange.data.storage.ExchangeStatus.ApprovalStatus;
 import in.co.gamedev.server.bookexchange.data.storage.UserBook;
 import in.co.gamedev.server.bookexchange.data.storage.UserData;
 import in.co.gamedev.server.bookexchange.data.storage.UserDataStore;
+
+import static in.co.gamedev.server.bookexchange.OfyService.ofy;
 
 /**
  * Created by suhas on 2/20/2015.
@@ -152,13 +159,18 @@ public class BookExchangeService {
   }
 
   @ApiMethod(name = "addExchangeCycle")
-  public void addExchangeCycle(ExchangeCycle exchangeCycle) {
+  public void addExchangeCycle(ExchangeCycle exchangeCycle) throws IOException {
     exchangeCycleStore.storeExchangeCycle(exchangeCycle);
+    // TODO(suhas): This should not be here. Whoever finds exchanges should decide whether to notify user.
+    for (ExchangeCycle.UserBookInvolved userBookInvolved : exchangeCycle.getUserBooksInvolved()) {
+      UserData user = userDataStore.getUserData(userBookInvolved.getUserId());
+      sendMessage(user, "Book Exchange found a new exchange", "There is a new exchange available for your books.");
+    }
   }
 
   @ApiMethod(name = "changeExchangeApproval")
   public ChangeExchangeApprovalResponse changeExchangeApproval(
-      ChangeExchangeApprovalRequest changeExchangeApprovalRequest) {
+      ChangeExchangeApprovalRequest changeExchangeApprovalRequest) throws IOException {
     exchangeCycleStore.updateExchangeApproval(
         changeExchangeApprovalRequest.getExchangeCycleId(),
         changeExchangeApprovalRequest.getUserId(),
@@ -166,11 +178,34 @@ public class BookExchangeService {
     );
     ChangeExchangeApprovalResponse response = new ChangeExchangeApprovalResponse();
     response.setSuccess(true);
+
+    ExchangeCycle exchangeCycle = exchangeCycleStore.getExchangeCycle(
+        changeExchangeApprovalRequest.getExchangeCycleId());
+
+    String approvalMessageTitle;
+    String approvalMessageText;
+
+    if (changeExchangeApprovalRequest.getNewApprovalStatus().equals(ApprovalStatus.APPROVED)) {
+      approvalMessageTitle = "One of your exchange is now Approved";
+      approvalMessageText = "Congratulations!! One of your exchange is now approved.";
+    } else if (changeExchangeApprovalRequest.getNewApprovalStatus().equals(ApprovalStatus.CANCELLED)) {
+      approvalMessageTitle = "One of your exchange is now Cancelled";
+      approvalMessageText = "We hate it when this happens. One of your exchange is now cancelled.";
+    } else {
+      return response;
+    }
+    for (ExchangeCycle.UserBookInvolved userBookInvolved : exchangeCycle.getUserBooksInvolved()) {
+      if (!userBookInvolved.equals(changeExchangeApprovalRequest.getUserId())) {
+        // Notify other users that one user approved.
+        UserData user = userDataStore.getUserData(userBookInvolved.getUserId());
+        sendMessage(user, approvalMessageTitle, approvalMessageText);
+      }
+    }
     return response;
   }
 
   @ApiMethod(name = "fakeUserAndExchange")
-  public void fakeUserAndExchange(@Named("userId") String userId) {
+  public void fakeUserAndExchange(@Named("userId") String userId) throws IOException {
     UserData existingUser = userDataStore.getUserData(userId);
     UserData newUser = userDataStore.getUserData(registerUser(new RegisterUserRequest()
         .setEmailAddress("fake@user.com")).getUserId());
@@ -191,5 +226,25 @@ public class BookExchangeService {
             .setUserId(newUser.getUserId())
             .setPickupBookId(expectedBook)
             .setDropBookId(ownedBook)));
+  }
+
+  private void sendMessage(UserData userData, String title, String text) throws IOException {
+    if (userData.getGcmRegistrationId() == null) {
+      return;
+    }
+    Sender sender = new Sender(Constants.API_KEY);
+    Message msg = new Message.Builder()
+        .addData(Constants.NOTIFICATION_TYPE, Constants.NOTIFICATION_TYPE_UPDATE_ON_EXCHANGE)
+        .addData(Constants.NOTIFICATION_KEY_TITLE, title)
+        .addData(Constants.NOTIFICATION_KEY_TEXT, text)
+        .build();
+    Result result = sender.send(msg, userData.getGcmRegistrationId(), 5);
+    if (result.getMessageId() != null) {
+      String canonicalRegId = result.getCanonicalRegistrationId();
+      if (canonicalRegId != null) {
+        userData.setGcmRegistrationId(canonicalRegId);
+        userDataStore.updateUserData(userData);
+      }
+    }
   }
 }

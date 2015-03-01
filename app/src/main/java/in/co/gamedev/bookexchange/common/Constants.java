@@ -21,4 +21,9 @@ public class Constants {
   public static final String SERVER_URL = "https://suphya4u.appspot.com/_ah/api/";
   public static final boolean IS_LOCAL = true;
   public static final String LOCAL_SERVER = "http://10.0.2.2:8080/_ah/api/";
+
+  public static final String NOTIFICATION_TYPE = "notificationType";
+  public static final String NOTIFICATION_TYPE_UPDATE_ON_EXCHANGE = "UPDATE_ON_EXCHANGE";
+  public static final String NOTIFICATION_KEY_TITLE = "NOTIFICATION_TITLE";
+  public static final String NOTIFICATION_KEY_TEXT = "NOTIFICATION_TEXT";
 }
