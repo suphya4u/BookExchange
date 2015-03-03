@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,10 @@ public class SearchBookActivity extends ActionBarActivity {
 
   private void handleSearch(View view) {
     TextView searchQuery = (TextView) findViewById(R.id.search_query);
+    InputMethodManager imm = (InputMethodManager)getSystemService(
+        Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(searchQuery.getWindowToken(), 0);
+
     BookSearchRequest request = new BookSearchRequest()
         .setQuery(searchQuery.getText().toString());
     searchBook(request);

@@ -46,7 +46,7 @@ public class GcmIntentService extends IntentService {
         String title = extras.getString(Constants.NOTIFICATION_KEY_TITLE);
         String text = extras.getString(Constants.NOTIFICATION_KEY_TEXT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.ic_stat_exchange_arrows)
             .setContentTitle(title)
             .setContentText(text)
             .setAutoCancel(true);
