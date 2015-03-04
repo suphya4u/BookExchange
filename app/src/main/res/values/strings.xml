@@ -9,7 +9,7 @@
     <string name="signup_button">Complete Signup</string>
     <string name="title_activity_user_location">Location</string>
     <string name="set_location_button">Done</string>
-    <string name="select_location_help_text">Select your location where you prefer to do exchanges:</string>
+    <string name="select_location_help_text">Select your location to find exchanges around you:</string>
     <string name="location_range_text">miles from the selected location</string>
     <string name="action_set_location">Update My Location</string>
     <string name="msg_registration_failed">Registration Failed</string>
@@ -26,8 +26,16 @@
     <string name="title_activity_my_books">My Books</string>
     <string name="title_activity_needed_books">Books I Want</string>
     <string name="title_activity_exchange_matches">My Exchanges</string>
-    <string name="add_book">Add</string>
+    <string name="add_book">Add Book</string>
     <string name="search_book_input">Search by Title/Auhor/ISBN</string>
     <string name="search_button">Search</string>
-    <string name="action_clear_prefs">Clear All Prefs</string>
+    <string name="action_clear_prefs">Clear All Data. Start from scratch</string>
+    <string name="app_title">Book Exchange</string>
+    <string name="exchange_books_list_help_text">List of books you would like to exchange with</string>
+    <string name="empty_exchange_list_help_text">Looks like you have not yet added anything in here. Please add books you would like to read in exchange of your books.</string>
+    <string name="owned_books_list_help_text">List of books up for exchange</string>
+    <string name="empty_owned_books_list_help_text">Looks like you have not yet added anything in here. Please add books you would like to exchange.</string>
+    <string name="my_books_menu_item">Books I want to exchange</string>
+    <string name="expected_books_menu_item">Books I am expecting in return</string>
+    <string name="exchanges_menu_item">My exchanges</string>
 </resources>

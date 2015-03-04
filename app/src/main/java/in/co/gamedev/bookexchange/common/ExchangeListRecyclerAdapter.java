@@ -19,7 +19,6 @@ import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.ChangeExchangeApprovalRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.ChangeExchangeApprovalResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.Exchange;
-import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsResponse;
 
 /**
  * Created by suhas on 2/26/2015.
@@ -66,6 +65,7 @@ public class ExchangeListRecyclerAdapter
     private TextView dropBookAuthor;
     private TextView myApprovalStatus;
     private TextView otherUserApprovalStatus;
+    private TextView exchangeCompleteText;
     private Button approveButton;
 
     public ExchangeItemViewHolder(View itemView) {
@@ -81,6 +81,8 @@ public class ExchangeListRecyclerAdapter
       myApprovalStatus = (TextView) itemView.findViewById(R.id.my_approval_status);
       otherUserApprovalStatus = (TextView) itemView.findViewById(R.id.other_user_approval_status);
       approveButton = (Button) itemView.findViewById(R.id.approve_button);
+
+      exchangeCompleteText = (TextView) itemView.findViewById(R.id.exchange_complete_text);
     }
 
     private void setExchange(final Exchange exchange) {
@@ -92,6 +94,12 @@ public class ExchangeListRecyclerAdapter
       dropBookAuthor.setText(exchange.getDropBook().getAuthor());
       new ImageLoaderTask(exchange.getDropBook().getThumbnailUrl(), dropBookThumbnail).execute();
 
+      if (exchange.getMyApprovalStatus().equals(Constants.APPROVAL_STATUS_APPROVED)
+          && exchange.getOtherUserApprovalStatus().equals(Constants.APPROVAL_STATUS_APPROVED)) {
+        exchangeCompleteText.setVisibility(View.VISIBLE);
+      } else {
+        exchangeCompleteText.setVisibility(View.GONE);
+      }
       myApprovalStatus.setText(exchange.getMyApprovalStatus());
       otherUserApprovalStatus.setText(exchange.getOtherUserApprovalStatus());
       if (!exchange.getMyApprovalStatus().equals(Constants.APPROVAL_STATUS_APPROVED)) {
@@ -130,6 +138,7 @@ public class ExchangeListRecyclerAdapter
         @Override
         public void onPostExecute(ChangeExchangeApprovalResponse response) {
           approveButton.setVisibility(View.GONE);
+          myApprovalStatus.setText(Constants.APPROVAL_STATUS_APPROVED);
         }
       }.execute(request);
     }

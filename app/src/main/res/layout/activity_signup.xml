@@ -2,14 +2,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     tools:context="in.co.gamedev.myapps.bookexchange.activity.SignupActivity"
+    android:background="@color/app_background"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            style="@style/signup_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_title"
+            style="@style/signup_title"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/first_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        style="@style/text_box"
         android:hint="@string/first_name"
         android:inputType="text|textCapWords|textNoSuggestions"/>
 
@@ -17,6 +36,7 @@
         android:id="@+id/email_address"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        style="@style/text_box"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"/>
 
@@ -24,6 +44,7 @@
         android:id="@+id/phone_number"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        style="@style/text_box"
         android:hint="@string/phone_number"
         android:inputType="phone"/>
 
@@ -31,6 +52,7 @@
         android:id="@+id/signup_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/signup_button"/>
+        android:text="@string/signup_button"
+        style="@style/signup_button"/>
 
 </LinearLayout>

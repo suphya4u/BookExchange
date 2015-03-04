@@ -2,9 +2,9 @@ package in.co.gamedev.bookexchange.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,12 +27,6 @@ public class MainActivity extends ActionBarActivity {
     if (prefs.getString(Constants.PREF_USER_ID, null) == null) {
       // Not signed up yet. Go to Signup activity.
       gotoActivity(SignupActivity.class, true /* clearBackNavigation */);
-      return;
-    }
-    if (!prefs.getBoolean(Constants.PREF_LOCATION_SAVED, false)) {
-      // Location for book exchange is not yet set up.
-      // TODO(suhas): Maybe do not go to activity and set default location as current location.
-      gotoActivity(UserLocationActivity.class, true /* clearBackNavigation */);
       return;
     }
     setContentView(R.layout.activity_main);

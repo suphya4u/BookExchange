@@ -1,21 +1,20 @@
 package in.co.gamedev.bookexchange.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 import in.co.gamedev.bookexchange.R;
 import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
 import in.co.gamedev.bookexchange.common.Constants;
-import in.co.gamedev.server.bookexchange.bookExchangeService.BookExchangeService;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserResponse;
 
@@ -47,7 +46,12 @@ public class SignupActivity extends ActionBarActivity {
     }
 
     SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_FILE, MODE_PRIVATE);
-    String regId = prefs.getString(Constants.PREF_REGISTRATION_ID, "");
+    String regId = prefs.getString(Constants.PREF_REGISTRATION_ID, null);
+    if (regId == null) {
+      Toast.makeText(this, "Device not registered. Your app might not behave correctly",
+          Toast.LENGTH_LONG).show();
+      return;
+    }
     RegisterUserRequest request = new RegisterUserRequest()
         .setGcmRegistrationId(regId)
         .setEmailAddress(emailAddress.getText().toString())

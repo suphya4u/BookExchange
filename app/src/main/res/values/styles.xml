@@ -5,4 +5,74 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="text_box">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:background">@drawable/rounded_corner_rectangle</item>
+    </style>
+
+    <style name="signup_icon">
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:src">@drawable/book_exchange_icon</item>
+    </style>
+
+    <style name="signup_title">
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/app_title_default</item>
+    </style>
+
+    <style name="button">
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="signup_button">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
+
+    <style name="top_header">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="bottom_help_text">
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="main_menu_item">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/rounded_corner_rectangle</item>
+    </style>
+
+    <style name="menu_item_text">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="book_list">
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="book_list_item">
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
+    <style name="exchange_list">
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="exchange_list_item">
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
 </resources>

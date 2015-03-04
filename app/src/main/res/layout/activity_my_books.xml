@@ -6,17 +6,19 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
+                android:background="@color/app_background"
                 android:orientation="vertical"
                 tools:context="in.co.gamedev.bookexchange.activity.MyBooksActivity">
 
     <TextView
-        android:text="List of you books up for exchange"
+        android:text="@string/owned_books_list_help_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        style="@style/top_header"/>
 
     <TextView
         android:id="@+id/zero_books_help_text"
-        android:text="Looks like you have not yet added anything in here. Please add books you would like to exchange."
+        android:text="@string/empty_owned_books_list_help_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
@@ -26,12 +28,14 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        style="@style/book_list"/>
 
     <Button
         android:id="@+id/add_book_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        style="@style/button"
         android:text="@string/add_book"/>
 
 </LinearLayout>
