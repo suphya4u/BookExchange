@@ -36,6 +36,11 @@ public class BookListRecyclerAdapter
     notifyDataSetChanged();
   }
 
+  public void updateItems(List<BookData> books) {
+    bookList.clear();
+    addItems(books);
+  }
+
   @Override
   public BookItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
     View view = LayoutInflater.from(viewGroup.getContext())

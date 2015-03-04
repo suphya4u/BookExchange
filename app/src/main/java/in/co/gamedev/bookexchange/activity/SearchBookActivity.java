@@ -2,12 +2,10 @@ package in.co.gamedev.bookexchange.activity;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,8 +18,6 @@ import java.util.ArrayList;
 import in.co.gamedev.bookexchange.R;
 import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
 import in.co.gamedev.bookexchange.common.BookListRecyclerAdapter;
-import in.co.gamedev.bookexchange.common.Constants;
-import in.co.gamedev.server.bookexchange.bookExchangeService.BookExchangeService;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookData;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchResponse;
@@ -67,19 +63,20 @@ public class SearchBookActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().searchBook(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
       @Override
       protected void onPostExecute(BookSearchResponse response) {
         if (response == null || response.getBooks() == null) {
-          Toast.makeText(SearchBookActivity.this, "Search Failed", Toast.LENGTH_LONG).show();
+          Toast.makeText(SearchBookActivity.this,
+              "Search Failed. Please try again. Maybe Network problem?", Toast.LENGTH_LONG).show();
           return;
         }
         Toast.makeText(SearchBookActivity.this, "Found '" + response.getBooks().size() + "' books",
             Toast.LENGTH_LONG).show();
-        ((BookListRecyclerAdapter) searchResultView.getAdapter()).addItems(response.getBooks());
+        ((BookListRecyclerAdapter) searchResultView.getAdapter()).updateItems(response.getBooks());
       }
     }.execute(bookSearchRequest);
   }

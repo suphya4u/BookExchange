@@ -2,12 +2,10 @@ package in.co.gamedev.bookexchange.activity;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,13 +15,10 @@ import java.util.ArrayList;
 
 import in.co.gamedev.bookexchange.R;
 import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
-import in.co.gamedev.bookexchange.common.BookListRecyclerAdapter;
 import in.co.gamedev.bookexchange.common.Constants;
 import in.co.gamedev.bookexchange.common.ExchangeListRecyclerAdapter;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchangeDetailsResponse;
-import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListRequest;
-import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListResponse;
 
 public class ExchangeMatchesActivity extends ActionBarActivity {
 
@@ -57,7 +52,7 @@ public class ExchangeMatchesActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().fetchExchangeDetails(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
@@ -65,7 +60,8 @@ public class ExchangeMatchesActivity extends ActionBarActivity {
       public void onPostExecute(FetchExchangeDetailsResponse response) {
         TextView zeroBooksHelpText = (TextView) findViewById(R.id.zero_match_help_text);
         if (response == null) {
-          Toast.makeText(ExchangeMatchesActivity.this, "Failed to fetch books list",
+          Toast.makeText(ExchangeMatchesActivity.this,
+              "Failed to fetch books list. Please try again. Maybe Network problem?",
               Toast.LENGTH_LONG).show();
         } else if (response.getExchanges() == null || response.getExchanges().size() == 0) {
           zeroBooksHelpText.setVisibility(View.VISIBLE);

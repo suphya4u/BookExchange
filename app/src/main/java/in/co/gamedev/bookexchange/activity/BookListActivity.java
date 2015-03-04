@@ -1,6 +1,5 @@
 package in.co.gamedev.bookexchange.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -9,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -41,7 +38,7 @@ public abstract class BookListActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().getBookList(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
@@ -49,7 +46,8 @@ public abstract class BookListActivity extends ActionBarActivity {
       public void onPostExecute(GetBookListResponse response) {
         TextView zeroBooksHelpText = (TextView) findViewById(R.id.zero_books_help_text);
         if (response == null) {
-          Toast.makeText(BookListActivity.this, "Failed to fetch books list",
+          Toast.makeText(BookListActivity.this,
+              "Failed to fetch books list. Please try again. Maybe Network problem?",
               Toast.LENGTH_LONG).show();
         } else if (response.getBooks() == null || response.getBooks().size() == 0) {
           zeroBooksHelpText.setVisibility(View.VISIBLE);
@@ -65,6 +63,9 @@ public abstract class BookListActivity extends ActionBarActivity {
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (data == null || data.getSerializableExtra(Constants.INTENT_EXTRA_SELECTED_BOOK) == null) {
+      return;
+    }
     SerializableBook book = (SerializableBook) data.getSerializableExtra(
         Constants.INTENT_EXTRA_SELECTED_BOOK);
     BookData bookData = book.getBookData();
@@ -92,14 +93,16 @@ public abstract class BookListActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().addBookToList(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
+          return null;
         }
-        return null;
       }
 
       @Override
       public void onPostExecute(AddBookResponse response) {
         if (response == null) {
-          Toast.makeText(BookListActivity.this, "Failed to add book to the list", Toast.LENGTH_LONG).show();
+          Toast.makeText(BookListActivity.this,
+              "Failed to add book to the list. Please try again. Maybe Network problem?",
+              Toast.LENGTH_LONG).show();
           return;
         }
         if (bookListView.getAdapter() != null) {

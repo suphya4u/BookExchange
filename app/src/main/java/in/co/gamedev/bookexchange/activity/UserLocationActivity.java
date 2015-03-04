@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import in.co.gamedev.bookexchange.R;
 import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
 import in.co.gamedev.bookexchange.common.Constants;
-import in.co.gamedev.server.bookexchange.bookExchangeService.BookExchangeService;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.ServiceResponse;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.UpdateLocationRequest;
 
@@ -62,12 +59,18 @@ public class UserLocationActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().updateLocation(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
       @Override
       protected void onPostExecute(ServiceResponse response) {
+        if (response == null) {
+          Toast.makeText(UserLocationActivity.this,
+              "Location update Failed. Please try again. Maybe Network problem?",
+              Toast.LENGTH_LONG).show();
+          return;
+        }
         SharedPreferences prefs = getSharedPreferences(
             Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = prefs.edit();

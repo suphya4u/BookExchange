@@ -5,8 +5,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,7 +26,13 @@ public class GoodReadsApi extends BookApis {
   private static final Logger log = Logger.getLogger(GoodReadsApi.class.getName());
 
   public List<BookData> search(String query) {
-    String urlStr = GoodReadsConstants.SEARCH_URL + query;
+    String urlStr = null;
+    try {
+      urlStr = GoodReadsConstants.SEARCH_URL + URLEncoder.encode(query, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
     BookSearchXmlHandler xmlHandler = new BookSearchXmlHandler();
     callApi(urlStr, xmlHandler);
     return xmlHandler.getResult();
@@ -35,6 +43,7 @@ public class GoodReadsApi extends BookApis {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
 

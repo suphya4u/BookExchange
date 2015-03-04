@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import in.co.gamedev.bookexchange.R;
 import in.co.gamedev.bookexchange.apiclient.BookExchangeServiceAsync;
+import in.co.gamedev.bookexchange.apiclient.GcmRegistrationAsyncTask;
 import in.co.gamedev.bookexchange.common.Constants;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserRequest;
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserResponse;
@@ -42,13 +43,16 @@ public class SignupActivity extends ActionBarActivity {
         || emailAddress.getText().toString().equals("")
         || phoneNumber.getText().toString().equals("")) {
       // TODO(suhas): Show error message.
+      Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show();
       return;
     }
 
     SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_FILE, MODE_PRIVATE);
     String regId = prefs.getString(Constants.PREF_REGISTRATION_ID, null);
     if (regId == null) {
-      Toast.makeText(this, "Device not registered. Your app might not behave correctly",
+      new GcmRegistrationAsyncTask(this).execute();
+      Toast.makeText(this,
+          "Device not registered. Your app might not behave correctly. Please try again after some time.",
           Toast.LENGTH_LONG).show();
       return;
     }
@@ -67,19 +71,25 @@ public class SignupActivity extends ActionBarActivity {
           return BookExchangeServiceAsync.getInstance().registerUser(params[0]);
         } catch (IOException e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
       @Override
       protected void onPostExecute(RegisterUserResponse registerUserResponse) {
+        if (registerUserResponse == null) {
+          Toast.makeText(SignupActivity.this,
+              "Registration Failed. Please try again. Maybe Network problem?",
+              Toast.LENGTH_LONG).show();
+          return;
+        }
         SharedPreferences prefs = getSharedPreferences(
             Constants.PREFERENCES_FILE, MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = prefs.edit();
         prefEditor.putString(Constants.PREF_USER_ID, registerUserResponse.getUserId());
         prefEditor.apply();
 
-        Intent intent = new Intent(SignupActivity.this, UserLocationActivity.class);
+        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
       }
