@@ -134,6 +134,10 @@
         android:id="@+id/exchange_complete_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This exchange is approved by all. We will get in touch with you soon to get this book exchanged."/>
+        android:text="We will contact you soon to pickup your book."/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        style="@style/line_break" />
 </LinearLayout>

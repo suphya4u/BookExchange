@@ -13,7 +13,8 @@
     <TextView
         android:text="Your matched exchanges"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        style="@style/top_header"/>
 
     <TextView
         android:id="@+id/zero_match_help_text"

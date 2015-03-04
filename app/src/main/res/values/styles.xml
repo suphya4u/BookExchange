@@ -73,6 +73,12 @@
     </style>
 
     <style name="exchange_list_item">
-        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="line_break">
+        <item name="android:background">@android:color/darker_gray</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
     </style>
 </resources>

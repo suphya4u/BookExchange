@@ -41,8 +41,6 @@ import in.co.gamedev.server.bookexchange.data.storage.UserBook;
 import in.co.gamedev.server.bookexchange.data.storage.UserData;
 import in.co.gamedev.server.bookexchange.data.storage.UserDataStore;
 
-import static in.co.gamedev.server.bookexchange.OfyService.ofy;
-
 /**
  * Created by suhas on 2/20/2015.
  */
@@ -204,20 +202,28 @@ public class BookExchangeService {
     return response;
   }
 
+  /*********************DELETE CODE FROM THIS POINT***********************
+   ***********************START OF CODE TO DELETE**************************/
+
   @ApiMethod(name = "fakeUserAndExchange")
   public void fakeUserAndExchange(@Named("userId") String userId) throws IOException {
     UserData existingUser = userDataStore.getUserData(userId);
     UserData newUser = userDataStore.getUserData(registerUser(new RegisterUserRequest()
         .setEmailAddress("fake@user.com")).getUserId());
-    String ownedBook = existingUser.getOwnedBooks().asList().get(0).getBookId();
-    String expectedBook = existingUser.getExpectedBooks().asList().get(0).getBookId();
+    String ownedBook = getBookAvailableForExchange(existingUser.getOwnedBooks().asList());
+    String expectedBook = getBookAvailableForExchange(existingUser.getExpectedBooks().asList());
+
+    if (ownedBook == null || expectedBook == null) {
+      throw new RuntimeException("No book for exchange.");
+    }
+
     addBookToList(new AddBookRequest()
         .setUserId(newUser.getUserId())
         .setBookId(expectedBook)
         .setListType(Constants.BOOK_LIST_TYPE_MY_BOOKS));
 
     addExchangeCycle(new ExchangeCycle()
-        .setExchangeCycleId("fake-exchange")
+        .setExchangeCycleId("fake-exchange-" + ownedBook)
         .addUserBooksInvolved(new ExchangeCycle.UserBookInvolved()
             .setUserId(existingUser.getUserId())
             .setPickupBookId(ownedBook)
@@ -227,6 +233,18 @@ public class BookExchangeService {
             .setPickupBookId(expectedBook)
             .setDropBookId(ownedBook)));
   }
+
+  private String getBookAvailableForExchange(List<UserBook> books) {
+    for (UserBook userBook : books) {
+      if (userBook.getBookExchangeStatus().equals(ExchangeStatus.BookStatus.READY_FOR_EXCHANGE)) {
+        return userBook.getBookId();
+      }
+    }
+    return null;
+  }
+
+  /*********************DELETE CODE TILL THIS POINT***********************
+  ***********************END OF CODE TO DELETE*****************************/
 
   private void sendMessage(UserData userData, String title, String text) throws IOException {
     if (userData.getGcmRegistrationId() == null) {

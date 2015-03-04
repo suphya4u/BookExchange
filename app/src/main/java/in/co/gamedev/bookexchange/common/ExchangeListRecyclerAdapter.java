@@ -114,7 +114,7 @@ public class ExchangeListRecyclerAdapter
               Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
           ChangeExchangeApprovalRequest request = new ChangeExchangeApprovalRequest()
               .setUserId(prefs.getString(Constants.PREF_USER_ID, null))
-              .setExchangeCycleId("fake-exchange")//exchange.getExchangeCycleId())
+              .setExchangeCycleId(exchange.getExchangeCycleId())
               .setNewApprovalStatus(Constants.APPROVAL_STATUS_APPROVED);
           handleApproveButtonClick(request);
         }
