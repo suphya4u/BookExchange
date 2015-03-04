@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.BookSearchRes
 public class SearchBookActivity extends ActionBarActivity {
 
   private RecyclerView searchResultView;
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,15 @@ public class SearchBookActivity extends ActionBarActivity {
 
   private void searchBook(BookSearchRequest bookSearchRequest) {
     new AsyncTask<BookSearchRequest, Void, BookSearchResponse>() {
+
+      @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(SearchBookActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
+
       @Override
       protected BookSearchResponse doInBackground(BookSearchRequest... params) {
         try {
@@ -69,13 +80,12 @@ public class SearchBookActivity extends ActionBarActivity {
 
       @Override
       protected void onPostExecute(BookSearchResponse response) {
+        progressDialog.dismiss();
         if (response == null || response.getBooks() == null) {
           Toast.makeText(SearchBookActivity.this,
               "Search Failed. Please try again. Maybe Network problem?", Toast.LENGTH_LONG).show();
           return;
         }
-        Toast.makeText(SearchBookActivity.this, "Found '" + response.getBooks().size() + "' books",
-            Toast.LENGTH_LONG).show();
         ((BookListRecyclerAdapter) searchResultView.getAdapter()).updateItems(response.getBooks());
       }
     }.execute(bookSearchRequest);

@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.common;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -68,6 +69,8 @@ public class ExchangeListRecyclerAdapter
     private TextView exchangeCompleteText;
     private Button approveButton;
 
+    private ProgressDialog progressDialog;
+
     public ExchangeItemViewHolder(View itemView) {
       super(itemView);
       pickupBookThumbnail = (ImageView) itemView.findViewById(R.id.pickup_book_thumbnail);
@@ -125,6 +128,14 @@ public class ExchangeListRecyclerAdapter
       new AsyncTask<ChangeExchangeApprovalRequest, Void, ChangeExchangeApprovalResponse>() {
 
         @Override
+        protected void onPreExecute() {
+          progressDialog = new ProgressDialog(itemView.getContext(), R.style.progress_dialog);
+          progressDialog.setCancelable(true);
+          progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+          progressDialog.show();
+        }
+
+        @Override
         protected ChangeExchangeApprovalResponse doInBackground(
             ChangeExchangeApprovalRequest... params) {
           try {
@@ -137,6 +148,7 @@ public class ExchangeListRecyclerAdapter
 
         @Override
         public void onPostExecute(ChangeExchangeApprovalResponse response) {
+          progressDialog.dismiss();
           approveButton.setVisibility(View.GONE);
           myApprovalStatus.setText(Constants.APPROVAL_STATUS_APPROVED);
         }

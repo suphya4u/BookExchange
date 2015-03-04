@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,6 +21,8 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserR
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.RegisterUserResponse;
 
 public class SignupActivity extends ActionBarActivity {
+
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,15 @@ public class SignupActivity extends ActionBarActivity {
 
   private void registerUser(RegisterUserRequest registerUserRequest) {
     new AsyncTask<RegisterUserRequest, Void, RegisterUserResponse>() {
+
+      @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(SignupActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
+
       @Override
       protected RegisterUserResponse doInBackground(RegisterUserRequest... params) {
         try {
@@ -77,6 +89,7 @@ public class SignupActivity extends ActionBarActivity {
 
       @Override
       protected void onPostExecute(RegisterUserResponse registerUserResponse) {
+        progressDialog.dismiss();
         if (registerUserResponse == null) {
           Toast.makeText(SignupActivity.this,
               "Registration Failed. Please try again. Maybe Network problem?",

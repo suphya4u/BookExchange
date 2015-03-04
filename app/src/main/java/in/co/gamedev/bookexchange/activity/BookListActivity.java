@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -28,9 +29,18 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.GetBookListRe
 public abstract class BookListActivity extends ActionBarActivity {
 
   protected RecyclerView bookListView;
+  protected ProgressDialog progressDialog;
 
   protected void fetchBookList(final GetBookListRequest getBookListRequest) {
     new AsyncTask<GetBookListRequest, Void, GetBookListResponse>() {
+
+      @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(BookListActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
 
       @Override
       protected GetBookListResponse doInBackground(GetBookListRequest... params) {
@@ -44,6 +54,7 @@ public abstract class BookListActivity extends ActionBarActivity {
 
       @Override
       public void onPostExecute(GetBookListResponse response) {
+        progressDialog.dismiss();
         TextView zeroBooksHelpText = (TextView) findViewById(R.id.zero_books_help_text);
         if (response == null) {
           Toast.makeText(BookListActivity.this,
@@ -88,6 +99,14 @@ public abstract class BookListActivity extends ActionBarActivity {
     new AsyncTask<AddBookRequest, Void, AddBookResponse>() {
 
       @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(BookListActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
+
+      @Override
       protected AddBookResponse doInBackground(AddBookRequest... params) {
         try {
           return BookExchangeServiceAsync.getInstance().addBookToList(params[0]);
@@ -99,6 +118,7 @@ public abstract class BookListActivity extends ActionBarActivity {
 
       @Override
       public void onPostExecute(AddBookResponse response) {
+        progressDialog.dismiss();
         if (response == null) {
           Toast.makeText(BookListActivity.this,
               "Failed to add book to the list. Please try again. Maybe Network problem?",

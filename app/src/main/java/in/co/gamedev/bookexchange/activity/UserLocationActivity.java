@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,8 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.ServiceRespon
 import in.co.gamedev.server.bookexchange.bookExchangeService.model.UpdateLocationRequest;
 
 public class UserLocationActivity extends ActionBarActivity {
+
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,15 @@ public class UserLocationActivity extends ActionBarActivity {
 
   private void updateLocation(UpdateLocationRequest updateLocationRequest) {
     new AsyncTask<UpdateLocationRequest, Void, ServiceResponse>() {
+
+      @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(UserLocationActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
+
       @Override
       protected ServiceResponse doInBackground(UpdateLocationRequest... params) {
         try {
@@ -65,6 +77,7 @@ public class UserLocationActivity extends ActionBarActivity {
 
       @Override
       protected void onPostExecute(ServiceResponse response) {
+        progressDialog.dismiss();
         if (response == null) {
           Toast.makeText(UserLocationActivity.this,
               "Location update Failed. Please try again. Maybe Network problem?",

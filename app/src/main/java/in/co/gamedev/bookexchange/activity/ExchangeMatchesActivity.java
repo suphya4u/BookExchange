@@ -1,5 +1,6 @@
 package in.co.gamedev.bookexchange.activity;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +23,8 @@ import in.co.gamedev.server.bookexchange.bookExchangeService.model.FetchExchange
 
 public class ExchangeMatchesActivity extends ActionBarActivity {
 
-  RecyclerView exchangeListView;
+  private RecyclerView exchangeListView;
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,14 @@ public class ExchangeMatchesActivity extends ActionBarActivity {
     new AsyncTask<FetchExchangeDetailsRequest, Void, FetchExchangeDetailsResponse>() {
 
       @Override
+      protected void onPreExecute() {
+        progressDialog = new ProgressDialog(ExchangeMatchesActivity.this, R.style.progress_dialog);
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.show();
+      }
+
+      @Override
       protected FetchExchangeDetailsResponse doInBackground(FetchExchangeDetailsRequest... params) {
         try {
           return BookExchangeServiceAsync.getInstance().fetchExchangeDetails(params[0]);
@@ -58,6 +68,7 @@ public class ExchangeMatchesActivity extends ActionBarActivity {
 
       @Override
       public void onPostExecute(FetchExchangeDetailsResponse response) {
+        progressDialog.dismiss();
         TextView zeroBooksHelpText = (TextView) findViewById(R.id.zero_match_help_text);
         if (response == null) {
           Toast.makeText(ExchangeMatchesActivity.this,
