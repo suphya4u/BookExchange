@@ -8,6 +8,7 @@
     tools:context="in.co.gamedev.bookexchange.activity.MainActivity">
 
     <fragment
+        android:id="@+id/mainFragmentTemp"
         android:name="in.co.gamedev.bookexchange.activity.MainActivity$NavigationPanelFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
